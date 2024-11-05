@@ -22,7 +22,7 @@ console.clear();
       });
     }
 
-    console.log(dates);
+    return dates;
   }
 
   function getCalendarBody() {
@@ -37,9 +37,53 @@ console.clear();
       });
     }
 
-    console.log(dates);
+    return dates;
   }
 
-  getCalendarHead();
-  //   getCalendarBody();
+  function getCalendarTail() {
+    const dates = [];
+    const lastDay = new Date(year, month + 1, 0).getDay();
+
+    for (let i = 1; i < 7 - lastDay; i++) {
+      dates.push({
+        date: i,
+        isToday: false,
+        isDisabled: true,
+      });
+    }
+    return dates;
+  }
+
+  function createCalender() {
+    const dates = [
+      ...getCalendarHead(),
+      ...getCalendarBody(),
+      ...getCalendarTail(),
+    ];
+    const weeks = [];
+    const weeksCount = dates.length / 7;
+
+    for (let i = 0; i < weeksCount; i++) {
+      weeks.push(dates.splice(0, 7));
+    }
+
+    weeks.forEach((week) => {
+      const tr = document.createElement("tr");
+      week.forEach((date) => {
+        const td = document.createElement("td");
+        td.textContent = date.date;
+        if (date.isToday) {
+          td.classList.add("today");
+        }
+        if (date.isDisabled) {
+          td.classList.add("disabled");
+        }
+
+        tr.appendChild(td);
+      });
+      document.querySelector("tbody").appendChild(tr);
+    });
+  }
+
+  createCalender();
 }
